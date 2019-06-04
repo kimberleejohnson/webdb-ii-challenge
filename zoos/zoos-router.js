@@ -20,6 +20,16 @@ const knexConfig = {
 const db = knex(knexConfig); 
 
 // Endpoints here
+
+// POST (C in CRUD)
+router.post('/', (req, res) => {
+    db('zoos').insert(req.body, 'id').then(ids => {
+        res.status(201).json(ids); 
+    }).catch(error => {
+        res.status(500).json(error); 
+    })
+}); 
+
 // GET all (R IN CRUD)
 router.get('/', (req, res) => {
     db('zoos').then(zoos => {
@@ -44,5 +54,22 @@ router.get('/', (req, res) => {
           res.status(500).json(error);
       });
   });
+
+  // DELETE (D in CRUD)
+  router.delete('/:id', (req, res) => {
+      db('zoos').where({id: req.params.id})
+      .del()
+      .then(count => {
+          if(count > 0) {
+              const unit = count> 1 ? 'zoos' : 'zoo';
+              res.status(200).json({message: `${count} ${unit} deleted!`})
+          } else {
+              res.status(404).json({ message: 'Zoo not found!'})
+        }
+      })
+      .catch(err => {
+          res.status(500).json(err)
+      })
+  })
 
   module.exports = router; 

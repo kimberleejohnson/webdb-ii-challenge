@@ -55,6 +55,20 @@ router.get('/', (req, res) => {
       });
   });
 
+  // PUT (U IN CRUD)
+  router.put('/:id', (req, res) => {
+      const changes = req.body; 
+      db('zoos').where({ id: req.params.id }).update(changes).then(count => {
+          if (count > 0) {
+              res.status(200).json({message: `${count} zoos updated!`})
+          } else {
+              res.status(404).json({message: "Zoo not found!"})
+          } 
+      }) .catch(error => {
+          res.status(500).json(error); 
+      })
+  });
+
   // DELETE (D in CRUD)
   router.delete('/:id', (req, res) => {
       db('zoos').where({id: req.params.id})

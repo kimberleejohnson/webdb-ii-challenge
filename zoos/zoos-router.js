@@ -30,6 +30,19 @@ router.get('/', (req, res) => {
     })
   }); 
   
-  // GET by id(R IN CRUD)
+  // GET by id (R IN CRUD)
+  router.get('/:id', (req, res) => {
+      db('zoos').where({ id: req.params.id })
+      .first()
+      .then(zoo => {
+          if(zoo) {
+              res.status(200).json(zoo); 
+          } else {
+              res.status(404).json({message: "Zoo not found, better build it!"})
+          }
+      }) .catch(error => {
+          res.status(500).json(error);
+      });
+  });
 
   module.exports = router; 
